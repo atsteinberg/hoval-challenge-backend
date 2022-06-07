@@ -8,12 +8,12 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
   @Query(() => [User])
   getUsers() {
-    return this.usersService.getAll();
+    return this.usersService.getAllUsers();
   }
 
   @Query(() => User)
   getUser(@Args('id') id: string) {
-    return this.usersService.getOne(id);
+    return this.usersService.getUserById(id);
   }
 
   @Mutation(() => User)

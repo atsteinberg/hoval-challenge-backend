@@ -8,9 +8,12 @@ import {
 import { PrismaService } from 'src/prisma/service/prisma.service';
 import { WeekDay } from '../enums/smart-home-device.enums';
 import { SetSmartHomeDeviceInput } from '../inputs/set-smart-home-device.input';
+import { PubSub } from 'graphql-subscriptions';
 
 const DEFAULT_ACTUAL_TEMPERATURE = 20.5;
 const everyDay = Object.values(WeekDay);
+
+const pubSub = new PubSub();
 
 export const includeAllSmartHomeDeviceModelsOption = {
   include: {
@@ -62,19 +65,20 @@ export class SmartHomeDeviceService {
             ],
           },
         },
+        ...includeAllSmartHomeDeviceModelsOption,
       });
-      console.log(createdDevice);
-      const targetTemperatureSchedule = this.prismaService.smartHomeDevice
-        .findUnique({
-          where: { id: createdDevice.id },
-        })
-        .targetTemperatureSchedule();
-      return {
-        ...createdDevice,
-        targetTemperatureSchedule,
-        errors: [],
-        statusChanges: [],
-      };
+      // const targetTemperatureSchedule = this.prismaService.smartHomeDevice
+      //   .findUnique({
+      //     where: { id: createdDevice.id },
+      //   })
+      //   .targetTemperatureSchedule();
+      // return {
+      //   ...createdDevice,
+      //   targetTemperatureSchedule,
+      //   errors: [],
+      //   statusChanges: [],
+      // };
+      return createdDevice;
     } catch (error) {
       throw new ForbiddenException('could not create smart home device');
     }
@@ -82,19 +86,32 @@ export class SmartHomeDeviceService {
 
   async setSmartHomeDevice(input: SetSmartHomeDeviceInput) {
     const { id, ownerId, ...updates } = input;
-    try {
-      return await this.prismaService.smartHomeDevice.update({
+    const deviceInCurrentState =
+      await this.prismaService.smartHomeDevice.findUnique({
         where: { id },
-        data: {
-          actualTemperature: updates.actualTemperature,
-          ownerId,
-        },
       });
-    } catch (error) {
-      console.error(error);
+    if (!deviceInCurrentState) {
       throw new NotFoundException(
         `No smart home device found with id ${input.id}`,
       );
     }
+    const updatedDevice = await this.prismaService.smartHomeDevice.update({
+      where: { id },
+      data: {
+        actualTemperature: updates.actualTemperature,
+        ownerId,
+      },
+      ...includeAllSmartHomeDeviceModelsOption,
+    });
+    if (
+      deviceInCurrentState.actualTemperature !== updatedDevice.actualTemperature
+    ) {
+      pubSub.publish('changeOccurred', { changeOccurred: updatedDevice });
+    }
+    return updatedDevice;
+  }
+
+  changeOccurred() {
+    return pubSub.asyncIterator('changeOccurred');
   }
 }

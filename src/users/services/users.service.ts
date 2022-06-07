@@ -11,21 +11,28 @@ import { UserInput } from '../inputs/user.input';
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getAll() {
+  async getAllUsers() {
     const users = await this.prismaService.user.findMany({
       include: {
         smartHomeDevices: { ...includeAllSmartHomeDeviceModelsOption },
       },
     });
-    console.log(users[0].smartHomeDevices);
     return users;
   }
 
-  async getOne(id: string) {
+  async getUserById(id: string) {
     try {
       return await this.prismaService.user.findUnique({ where: { id } });
     } catch (_error) {
       throw new NotFoundException(`No user found with id ${id}`);
+    }
+  }
+
+  async getUserByEmail(email: string) {
+    try {
+      return await this.prismaService.user.findUnique({ where: { email } });
+    } catch (_error) {
+      throw new NotFoundException(`No user found with email ${email}`);
     }
   }
 

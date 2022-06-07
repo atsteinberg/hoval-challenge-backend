@@ -7,6 +7,7 @@ import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { SmartHomeDevicesModule } from './smart-home-devices/smart-home-devices.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,9 +20,13 @@ import { UsersModule } from './users/users.module';
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
     SmartHomeDevicesModule,
     UsersModule,
+    AuthModule,
   ],
   providers: [],
 })
