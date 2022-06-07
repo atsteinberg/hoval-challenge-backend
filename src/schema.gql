@@ -1,0 +1,77 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type DeviceError {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  errorType: String!
+  message: String!
+  status: ErrorStatus!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum ErrorStatus {
+  Active
+  Checked
+  Resolved
+}
+
+type StatusChange {
+  id: String!
+  date: DateTime!
+  event: String!
+}
+
+type TargetTemperatureEntry {
+  days: [WeekDay!]!
+  from: DateTime
+  to: DateTime
+  targetTemperature: Float!
+}
+
+enum WeekDay {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+type SmartHomeDevice {
+  id: ID!
+  targetTemperatureSchedule: [TargetTemperatureEntry!]!
+  errors: [DeviceError!]!
+  statusChanges: [StatusChange!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  ownerId: String
+  type: DeviceType!
+  actualTemperature: Float!
+}
+
+enum DeviceType {
+  HeatingCircuit
+  CoolingCircuit
+}
+
+type Query {
+  getSmartHomeDevices: [SmartHomeDevice!]!
+  getSmartHomeDevice(id: String!): SmartHomeDevice!
+}
+
+type Mutation {
+  createSmartHomeDevice(input: CreateSmartHomeDeviceInput!): SmartHomeDevice!
+}
+
+input CreateSmartHomeDeviceInput {
+  type: DeviceType!
+  ownerId: String
+}

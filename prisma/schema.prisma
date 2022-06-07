@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type             UserType
+  userName         String
+  email            String            @unique
+  hashedPassword   String
+  hashedRt         String?
+  oldRts           String[]
+  smartHomeDevices SmartHomeDevice[]
+}
+
+model SmartHomeDevice {
+  id        String   @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner                     User?                    @relation(fields: [ownerId], references: [id])
+  ownerId                   String?
+  type                      DeviceType
+  actualTemperature         Float
+  targetTemperatureSchedule TargetTemperatureEntry[]
+  errors                    DeviceError[]
+  statusChanges             StatusChange[]
+}
+
+model DeviceError {
+  id        String   @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  source            SmartHomeDevice? @relation(fields: [smartHomeDeviceId], references: [id])
+  errorType         String
+  message           String?
+  status            ErrorStatus
+  smartHomeDeviceId String?
+}
+
+model StatusChange {
+  id   String   @unique @default(uuid())
+  date DateTime @default(now())
+
+  target SmartHomeDevice? @relation(fields: [smartHomeDeviceId], references: [id])
+
+  event             String
+  smartHomeDeviceId String?
+}
+
+model TargetTemperatureEntry {
+  id                String           @unique @default(uuid())
+  days              WeekDay[]
+  from              DateTime?
+  to                DateTime?
+  timeOfDay         TimeOfDay[]
+  targetTemperature Float
+  SmartHomeDevice   SmartHomeDevice? @relation(fields: [smartHomeDeviceId], references: [id])
+  smartHomeDeviceId String?
+}
+
+enum DeviceType {
+  HeatingCircuit
+  CoolingCircuit
+}
+
+enum ErrorStatus {
+  Active
+  Checked
+  Resolved
+}
+
+enum UserType {
+  Admin
+  User
+}
+
+enum WeekDay {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+enum TimeOfDay {
+  Day
+  Night
+}
