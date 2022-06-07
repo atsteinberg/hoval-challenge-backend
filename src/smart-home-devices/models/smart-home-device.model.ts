@@ -1,4 +1,10 @@
-import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { DeviceType } from '../enums/smart-home-device.enums';
 import { DeviceError } from './device-error.model';
 import { StatusChange } from './status-change.model';

@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateSmartHomeDeviceInput } from '../inputs/create-smart-home-device.input';
+import { SetSmartHomeDeviceInput } from '../inputs/set-smart-home-device.input';
 import { SmartHomeDevice } from '../models/smart-home-device.model';
 import { SmartHomeDeviceService } from '../services/smart-home-device.service';
 
@@ -24,5 +25,10 @@ export class SmartHomeDeviceResolver {
     input: CreateSmartHomeDeviceInput,
   ) {
     return this.smartHomeDeviceService.createSmartHomeDevice(input);
+  }
+
+  @Mutation(() => SmartHomeDevice)
+  setSmartHomeDevice(@Args('input') input: SetSmartHomeDeviceInput) {
+    return this.smartHomeDeviceService.setSmartHomeDevice(input);
   }
 }

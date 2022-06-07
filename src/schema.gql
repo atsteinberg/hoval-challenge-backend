@@ -62,16 +62,70 @@ enum DeviceType {
   CoolingCircuit
 }
 
+type User {
+  id: ID!
+  smartHomeDevices: [SmartHomeDevice!]!
+  email: String!
+  hashedPassword: String!
+  type: UserType!
+}
+
+enum UserType {
+  Admin
+  User
+}
+
+input DeviceErrorInput {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  errorType: String!
+  message: String!
+  status: ErrorStatus!
+}
+
+input StatusChangeInput {
+  id: String!
+  date: DateTime!
+  event: String!
+}
+
+input TargetTemperatureEntryInput {
+  days: [WeekDay!]!
+  from: DateTime
+  to: DateTime
+  targetTemperature: Float!
+}
+
 type Query {
   getSmartHomeDevices: [SmartHomeDevice!]!
   getSmartHomeDevice(id: String!): SmartHomeDevice!
+  getUsers: [User!]!
+  getUser(id: String!): User!
 }
 
 type Mutation {
   createSmartHomeDevice(input: CreateSmartHomeDeviceInput!): SmartHomeDevice!
+  setSmartHomeDevice(input: SetSmartHomeDeviceInput!): SmartHomeDevice!
+  createUser(newUser: UserInput!): User!
 }
 
 input CreateSmartHomeDeviceInput {
   type: DeviceType!
   ownerId: String
+}
+
+input SetSmartHomeDeviceInput {
+  errors: [DeviceErrorInput!]
+  statusChanges: [StatusChangeInput!]
+  ownerId: String
+  type: DeviceType
+  actualTemperature: Float
+  id: String!
+}
+
+input UserInput {
+  email: String!
+  hashedPassword: String!
+  type: UserType
 }

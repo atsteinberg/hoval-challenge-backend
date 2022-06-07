@@ -1,4 +1,9 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import {
+  Field,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { IsNumber, Max, Min } from 'class-validator';
 import { WeekDay } from '../enums/smart-home-device.enums';
 
@@ -7,6 +12,7 @@ registerEnumType(WeekDay, {
 });
 
 @ObjectType()
+@InputType('TargetTemperatureEntryInput')
 export class TargetTemperatureEntry {
   from?: Date;
   to?: Date;

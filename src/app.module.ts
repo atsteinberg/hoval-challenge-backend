@@ -4,9 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { join } from 'path';
-import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { SmartHomeDevicesModule } from './smart-home-devices/smart-home-devices.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -21,7 +21,8 @@ import { SmartHomeDevicesModule } from './smart-home-devices/smart-home-devices.
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     SmartHomeDevicesModule,
+    UsersModule,
   ],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

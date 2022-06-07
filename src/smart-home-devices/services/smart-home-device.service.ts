@@ -7,14 +7,17 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/service/prisma.service';
 import { WeekDay } from '../enums/smart-home-device.enums';
+import { SetSmartHomeDeviceInput } from '../inputs/set-smart-home-device.input';
 
 const DEFAULT_ACTUAL_TEMPERATURE = 20.5;
 const everyDay = Object.values(WeekDay);
 
-const includeAll = {
-  errors: true,
-  targetTemperatureSchedule: true,
-  statusChanges: true,
+export const includeAllSmartHomeDeviceModelsOption = {
+  include: {
+    errors: true,
+    targetTemperatureSchedule: true,
+    statusChanges: true,
+  },
 };
 
 @Injectable()
@@ -23,14 +26,14 @@ export class SmartHomeDeviceService {
 
   getSmartHomeDevices() {
     return this.prismaService.smartHomeDevice.findMany({
-      include: includeAll,
+      ...includeAllSmartHomeDeviceModelsOption,
     });
   }
 
   async getSmartHomeDevice(id: string) {
     const device = await this.prismaService.smartHomeDevice.findUnique({
       where: { id },
-      include: includeAll,
+      ...includeAllSmartHomeDeviceModelsOption,
     });
     if (device) {
       return device;
@@ -74,6 +77,24 @@ export class SmartHomeDeviceService {
       };
     } catch (error) {
       throw new ForbiddenException('could not create smart home device');
+    }
+  }
+
+  async setSmartHomeDevice(input: SetSmartHomeDeviceInput) {
+    const { id, ownerId, ...updates } = input;
+    try {
+      return await this.prismaService.smartHomeDevice.update({
+        where: { id },
+        data: {
+          actualTemperature: updates.actualTemperature,
+          ownerId,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      throw new NotFoundException(
+        `No smart home device found with id ${input.id}`,
+      );
     }
   }
 }

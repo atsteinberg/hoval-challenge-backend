@@ -1,4 +1,4 @@
-import { ObjectType, registerEnumType } from '@nestjs/graphql';
+import { InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { ErrorStatus } from '../enums/smart-home-device.enums';
 
 registerEnumType(ErrorStatus, {
@@ -6,6 +6,7 @@ registerEnumType(ErrorStatus, {
 });
 
 @ObjectType()
+@InputType('DeviceErrorInput')
 export class DeviceError {
   id: string;
   createdAt: Date;

@@ -1,5 +1,17 @@
-import { InputType, PartialType } from '@nestjs/graphql';
+import { InputType, PartialType, PickType } from '@nestjs/graphql';
 import { SmartHomeDevice } from '../models/smart-home-device.model';
 
+const PickedType = PickType(SmartHomeDevice, [
+  'actualTemperature',
+  'type',
+  'ownerId',
+  'errors',
+  'statusChanges',
+]);
 @InputType()
-export class SetSmartHomeDevice extends PartialType(SmartHomeDevice) {}
+export class SetSmartHomeDeviceInput extends PartialType(
+  PickedType,
+  InputType,
+) {
+  id: string;
+}

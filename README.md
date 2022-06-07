@@ -6,7 +6,7 @@
 Make sure Node v17.4.0 is installed. Install otherwise
 
 ### Docker
-Make sure Docker command line tool is available. Install otherwise
+Make sure Docker command line tool is available. Install otherwise.
 
 ### SSL Certificates
 
