@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { IsEmail } from 'class-validator';
+import { IsString } from 'class-validator';
 import { SmartHomeDevice } from 'src/smart-home-devices/models/smart-home-device.model';
 import { UserType } from '../enums/user-type.enum';
 
@@ -10,10 +10,8 @@ export class User {
   @Field(() => ID)
   id: string;
 
-  @IsEmail()
-  email: string;
-
-  hashedPassword: string;
+  @IsString()
+  username: string;
 
   type: UserType;
 

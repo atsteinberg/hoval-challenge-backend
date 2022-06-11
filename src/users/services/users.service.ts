@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { hash } from 'bcrypt';
 import { PrismaService } from 'src/prisma/service/prisma.service';
 import { includeAllSmartHomeDeviceModelsOption } from 'src/smart-home-devices/services/smart-home-device.service';
 import { UserInput } from '../inputs/user.input';
@@ -28,20 +29,21 @@ export class UsersService {
     }
   }
 
-  async getUserByEmail(email: string) {
+  async getUserByName(username: string) {
     try {
-      return await this.prismaService.user.findUnique({ where: { email } });
+      return await this.prismaService.user.findUnique({ where: { username } });
     } catch (_error) {
-      throw new NotFoundException(`No user found with email ${email}`);
+      throw new NotFoundException(`No user found with username ${username}`);
     }
   }
 
   async createUser(newUser: UserInput) {
-    const { type, ...rest } = newUser;
+    const { type, password, ...rest } = newUser;
     try {
       return await this.prismaService.user.create({
         data: {
           type: type || 'User',
+          hashedPassword: await hash(password, 10),
           ...rest,
         },
       });

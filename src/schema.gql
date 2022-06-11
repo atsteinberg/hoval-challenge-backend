@@ -65,8 +65,7 @@ enum DeviceType {
 type User {
   id: ID!
   smartHomeDevices: [SmartHomeDevice!]!
-  email: String!
-  hashedPassword: String!
+  username: String!
   type: UserType!
 }
 
@@ -125,9 +124,9 @@ input SetSmartHomeDeviceInput {
 }
 
 input UserInput {
-  email: String!
-  hashedPassword: String!
+  username: String!
   type: UserType
+  password: String!
 }
 
 type Subscription {

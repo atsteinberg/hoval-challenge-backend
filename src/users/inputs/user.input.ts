@@ -3,10 +3,7 @@ import { User } from 'src/users/models/users.model';
 import { UserType } from '../enums/user-type.enum';
 
 @InputType()
-export class UserInput extends PickType(
-  User,
-  ['email', 'hashedPassword'],
-  InputType,
-) {
+export class UserInput extends PickType(User, ['username'], InputType) {
   type?: UserType;
+  password: string;
 }
