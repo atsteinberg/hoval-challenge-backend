@@ -28,26 +28,8 @@ type StatusChange {
   event: String!
 }
 
-type TargetTemperatureEntry {
-  days: [WeekDay!]!
-  from: DateTime
-  to: DateTime
-  targetTemperature: Float!
-}
-
-enum WeekDay {
-  Monday
-  Tuesday
-  Wednesday
-  Thursday
-  Friday
-  Saturday
-  Sunday
-}
-
 type SmartHomeDevice {
   id: ID!
-  targetTemperatureSchedule: [TargetTemperatureEntry!]!
   errors: [DeviceError!]!
   statusChanges: [StatusChange!]!
   createdAt: DateTime!
@@ -55,6 +37,7 @@ type SmartHomeDevice {
   ownerId: String
   type: DeviceType!
   actualTemperature: Float!
+  targetTemperature: Float!
 }
 
 enum DeviceType {
@@ -87,13 +70,6 @@ input StatusChangeInput {
   id: String!
   date: DateTime!
   event: String!
-}
-
-input TargetTemperatureEntryInput {
-  days: [WeekDay!]!
-  from: DateTime
-  to: DateTime
-  targetTemperature: Float!
 }
 
 type Query {

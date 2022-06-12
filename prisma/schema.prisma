@@ -28,13 +28,13 @@ model SmartHomeDevice {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner                     User?                    @relation(fields: [ownerId], references: [id])
-  ownerId                   String?
-  type                      DeviceType
-  actualTemperature         Float
-  targetTemperatureSchedule TargetTemperatureEntry[]
-  errors                    DeviceError[]
-  statusChanges             StatusChange[]
+  owner             User?          @relation(fields: [ownerId], references: [id])
+  ownerId           String?
+  type              DeviceType
+  actualTemperature Float
+  targetTemperature Float
+  errors            DeviceError[]
+  statusChanges     StatusChange[]
 }
 
 model DeviceError {
@@ -59,17 +59,6 @@ model StatusChange {
   smartHomeDeviceId String?
 }
 
-model TargetTemperatureEntry {
-  id                String           @unique @default(uuid())
-  days              WeekDay[]
-  from              DateTime?
-  to                DateTime?
-  timeOfDay         TimeOfDay[]
-  targetTemperature Float
-  SmartHomeDevice   SmartHomeDevice? @relation(fields: [smartHomeDeviceId], references: [id])
-  smartHomeDeviceId String?
-}
-
 enum DeviceType {
   HeatingCircuit
   CoolingCircuit
@@ -84,19 +73,4 @@ enum ErrorStatus {
 enum UserType {
   Admin
   User
-}
-
-enum WeekDay {
-  Monday
-  Tuesday
-  Wednesday
-  Thursday
-  Friday
-  Saturday
-  Sunday
-}
-
-enum TimeOfDay {
-  Day
-  Night
 }
