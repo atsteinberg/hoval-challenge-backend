@@ -21,5 +21,5 @@ export enum WeekDay {
 
 export enum UserInteractionType {
   NameChange = 'NameChange',
-  TargetTemperatureChanhe = 'TargetTemperatureChange',
+  TargetTemperatureChange = 'TargetTemperatureChange',
 }
