@@ -6,19 +6,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/service/prisma.service';
-import { WeekDay } from '../enums/smart-home-device.enums';
 import { SetSmartHomeDeviceInput } from '../inputs/set-smart-home-device.input';
 import { PubSub } from 'graphql-subscriptions';
 
 const DEFAULT_ACTUAL_TEMPERATURE = 20.5;
-const everyDay = Object.values(WeekDay);
+const DEFAULT_TARGET_TEMPERATURE = 21;
 
 const pubSub = new PubSub();
 
 export const includeAllSmartHomeDeviceModelsOption = {
   include: {
     errors: true,
-    targetTemperatureSchedule: true,
     statusChanges: true,
   },
 };
@@ -27,18 +25,19 @@ export const includeAllSmartHomeDeviceModelsOption = {
 export class SmartHomeDeviceService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getSmartHomeDevices() {
+  getSmartHomeDevices(ownerId: string) {
     return this.prismaService.smartHomeDevice.findMany({
+      where: { ownerId },
       ...includeAllSmartHomeDeviceModelsOption,
     });
   }
 
-  async getSmartHomeDevice(id: string) {
+  async getSmartHomeDevice(id: string, ownerId: string) {
     const device = await this.prismaService.smartHomeDevice.findUnique({
       where: { id },
       ...includeAllSmartHomeDeviceModelsOption,
     });
-    if (device) {
+    if (device && device.ownerId === ownerId) {
       return device;
     }
     throw new NotFoundException(`Cannot find smart home device with id ${id}`);
@@ -50,34 +49,10 @@ export class SmartHomeDeviceService {
         data: {
           type: input.type,
           actualTemperature: DEFAULT_ACTUAL_TEMPERATURE,
-          targetTemperatureSchedule: {
-            create: [
-              {
-                days: everyDay,
-                timeOfDay: ['Day'],
-                targetTemperature: 21.0,
-              },
-              {
-                days: everyDay,
-                timeOfDay: ['Night'],
-                targetTemperature: 20.0,
-              },
-            ],
-          },
+          targetTemperature: DEFAULT_TARGET_TEMPERATURE,
         },
         ...includeAllSmartHomeDeviceModelsOption,
       });
-      // const targetTemperatureSchedule = this.prismaService.smartHomeDevice
-      //   .findUnique({
-      //     where: { id: createdDevice.id },
-      //   })
-      //   .targetTemperatureSchedule();
-      // return {
-      //   ...createdDevice,
-      //   targetTemperatureSchedule,
-      //   errors: [],
-      //   statusChanges: [],
-      // };
       return createdDevice;
     } catch (error) {
       throw new ForbiddenException('could not create smart home device');

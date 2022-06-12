@@ -14,16 +14,17 @@ export class SmartHomeDeviceResolver {
   constructor(
     private readonly smartHomeDeviceService: SmartHomeDeviceService,
   ) {}
+  @UseGuards(GqlAuthGuard)
   @Query(() => [SmartHomeDevice])
-  getSmartHomeDevices() {
-    return this.smartHomeDeviceService.getSmartHomeDevices();
+  getSmartHomeDevices(@CurrentUser() user: User) {
+    return this.smartHomeDeviceService.getSmartHomeDevices(user.id);
   }
 
   @UseGuards(GqlAuthGuard)
   @Query(() => SmartHomeDevice)
   getSmartHomeDevice(@Args('id') id: string, @CurrentUser() user: User) {
     console.log({ user });
-    return this.smartHomeDeviceService.getSmartHomeDevice(id);
+    return this.smartHomeDeviceService.getSmartHomeDevice(id, user.id);
   }
 
   @Mutation(() => SmartHomeDevice)
