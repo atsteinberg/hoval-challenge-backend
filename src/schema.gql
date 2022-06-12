@@ -113,8 +113,6 @@ input CreateSmartHomeDeviceInput {
 }
 
 input SetSmartHomeDeviceInput {
-  errors: [DeviceErrorInput!]
-  statusChanges: [StatusChangeInput!]
   ownerId: String
   type: DeviceType
   actualTemperature: Float

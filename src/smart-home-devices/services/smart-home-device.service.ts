@@ -85,7 +85,9 @@ export class SmartHomeDeviceService {
     if (
       deviceInCurrentState.actualTemperature !== updatedDevice.actualTemperature
     ) {
-      pubSub.publish('changeOccurred', { changeOccurred: updatedDevice });
+      pubSub.publish('changeOccurred', {
+        changeOccurred: updatedDevice,
+      });
     }
     return updatedDevice;
   }
@@ -117,7 +119,9 @@ export class SmartHomeDeviceService {
             userInteractions: {
               create: {
                 interactionType: 'TargetTemperatureChange',
-                message: `Target temperature changed from ${deviceInOriginalState.targetTemperature}°C to ${updates.targetTemperature}`,
+                message: `Target temperature changed from ${deviceInOriginalState.targetTemperature.toFixed(
+                  1,
+                )}°C to ${updates.targetTemperature.toFixed(1)}°C`,
               },
             },
           },
@@ -141,7 +145,9 @@ export class SmartHomeDeviceService {
         });
       }
       if (updated) {
-        pubSub.publish('changeOccurred', { changeOccurred: updatedDevice });
+        pubSub.publish('changeOccurred', {
+          changeOccurred: updatedDevice,
+        });
         return updatedDevice;
       }
     } catch (error) {

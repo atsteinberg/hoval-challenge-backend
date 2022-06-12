@@ -36,6 +36,12 @@ export class SmartHomeDeviceResolver {
     return this.smartHomeDeviceService.updateSmartHomeDevice(user.id, input);
   }
 
+  // TODO protect
+  @Subscription(() => SmartHomeDevice)
+  changeOccurred() {
+    return this.smartHomeDeviceService.changeOccurred();
+  }
+  // admin functionality
   @Mutation(() => SmartHomeDevice)
   createSmartHomeDevice(
     @Args('input')
@@ -43,14 +49,9 @@ export class SmartHomeDeviceResolver {
   ) {
     return this.smartHomeDeviceService.createSmartHomeDevice(input);
   }
-
+  // admin functionality
   @Mutation(() => SmartHomeDevice)
   setSmartHomeDevice(@Args('input') input: SetSmartHomeDeviceInput) {
     return this.smartHomeDeviceService.setSmartHomeDevice(input);
-  }
-
-  @Subscription(() => SmartHomeDevice)
-  changeOccurred() {
-    return this.smartHomeDeviceService.changeOccurred();
   }
 }

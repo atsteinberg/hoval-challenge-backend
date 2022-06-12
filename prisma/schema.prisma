@@ -47,7 +47,7 @@ model DeviceError {
   source            SmartHomeDevice? @relation(fields: [smartHomeDeviceId], references: [id])
   errorType         String
   message           String?
-  status            ErrorStatus
+  status            ErrorStatus      @default(Active)
   smartHomeDeviceId String?
 }
 

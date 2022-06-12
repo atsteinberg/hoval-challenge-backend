@@ -13,7 +13,10 @@ export class AuthService {
 
   async validateUser(username: string, password: string) {
     const user = await this.usersService.getUserByName(username);
-    const passwordsAreEqual = await compare(password, user.hashedPassword);
+    const passwordsAreEqual = await compare(
+      password,
+      user?.hashedPassword ?? '',
+    );
     if (!user || !passwordsAreEqual) {
       return null;
     }
