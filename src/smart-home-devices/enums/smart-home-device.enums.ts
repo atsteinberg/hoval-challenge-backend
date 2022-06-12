@@ -18,3 +18,8 @@ export enum WeekDay {
   Saturday = 'Saturday',
   Sunday = 'Sunday',
 }
+
+export enum UserInteractionType {
+  NameChange = 'NameChange',
+  TargetTemperatureChanhe = 'TargetTemperatureChange',
+}

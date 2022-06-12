@@ -28,16 +28,30 @@ type StatusChange {
   event: String!
 }
 
+type UserInteraction {
+  id: String!
+  date: DateTime!
+  interactionType: UserInteractionType!
+  message: String!
+}
+
+enum UserInteractionType {
+  NameChange
+  TargetTemperatureChanhe
+}
+
 type SmartHomeDevice {
   id: ID!
   errors: [DeviceError!]!
   statusChanges: [StatusChange!]!
+  userInteractions: [UserInteraction!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   ownerId: String
   type: DeviceType!
   actualTemperature: Float!
   targetTemperature: Float!
+  name: String!
 }
 
 enum DeviceType {
@@ -80,14 +94,22 @@ type Query {
 }
 
 type Mutation {
+  updateSmartHomeDevice(input: UpdateSmartHomeDeviceInput!): SmartHomeDevice!
   createSmartHomeDevice(input: CreateSmartHomeDeviceInput!): SmartHomeDevice!
   setSmartHomeDevice(input: SetSmartHomeDeviceInput!): SmartHomeDevice!
   createUser(newUser: UserInput!): User!
 }
 
+input UpdateSmartHomeDeviceInput {
+  targetTemperature: Float
+  name: String
+  id: String!
+}
+
 input CreateSmartHomeDeviceInput {
-  type: DeviceType!
   ownerId: String
+  type: DeviceType!
+  name: String!
 }
 
 input SetSmartHomeDeviceInput {

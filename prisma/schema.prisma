@@ -28,13 +28,15 @@ model SmartHomeDevice {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner             User?          @relation(fields: [ownerId], references: [id])
+  name              String?
+  owner             User?             @relation(fields: [ownerId], references: [id])
   ownerId           String?
   type              DeviceType
   actualTemperature Float
   targetTemperature Float
   errors            DeviceError[]
   statusChanges     StatusChange[]
+  userInteractions  UserInteraction[]
 }
 
 model DeviceError {
@@ -59,6 +61,17 @@ model StatusChange {
   smartHomeDeviceId String?
 }
 
+model UserInteraction {
+  id   String   @unique @default(uuid())
+  date DateTime @default(now())
+
+  interactionType UserInteractionType
+  message         String
+
+  target            SmartHomeDevice? @relation(fields: [smartHomeDeviceId], references: [id])
+  smartHomeDeviceId String?
+}
+
 enum DeviceType {
   HeatingCircuit
   CoolingCircuit
@@ -73,4 +86,9 @@ enum ErrorStatus {
 enum UserType {
   Admin
   User
+}
+
+enum UserInteractionType {
+  NameChange
+  TargetTemperatureChange
 }
