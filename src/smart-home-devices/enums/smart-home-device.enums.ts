@@ -4,9 +4,9 @@ export enum DeviceType {
 }
 
 export enum ErrorStatus {
-  Active = 'Active',
-  Checked = 'Checked',
-  Resolved = 'Resolved',
+  Unread = 'Unread',
+  Read = 'Read',
+  Acknowledged = 'Acknowledged',
 }
 
 export enum WeekDay {

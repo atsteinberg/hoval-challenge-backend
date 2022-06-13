@@ -5,7 +5,9 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { CreateSmartHomeDeviceInput } from '../inputs/create-smart-home-device.input';
 import { SetSmartHomeDeviceInput } from '../inputs/set-smart-home-device.input';
+import { UpdateDeviceErrorInput } from '../inputs/update-device-error-input';
 import { UpdateSmartHomeDeviceInput } from '../inputs/update-smart-home-device-input';
+import { DeviceError } from '../models/device-error.model';
 import { SmartHomeDevice } from '../models/smart-home-device.model';
 import { SmartHomeDeviceService } from '../services/smart-home-device.service';
 
@@ -41,6 +43,22 @@ export class SmartHomeDeviceResolver {
   changeOccurred() {
     return this.smartHomeDeviceService.changeOccurred();
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => DeviceError)
+  getError(@Args('id') id: string, @CurrentUser() user: User) {
+    return this.smartHomeDeviceService.getError(id, user.id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => DeviceError)
+  updateError(
+    @Args('input') input: UpdateDeviceErrorInput,
+    @CurrentUser() user: User,
+  ) {
+    return this.smartHomeDeviceService.updateError(user.id, input);
+  }
+
   // admin functionality
   @Mutation(() => SmartHomeDevice)
   createSmartHomeDevice(

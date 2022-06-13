@@ -11,6 +11,7 @@ import { SetSmartHomeDeviceInput } from '../inputs/set-smart-home-device.input';
 import { PubSub } from 'graphql-subscriptions';
 import { UpdateSmartHomeDeviceInput } from '../inputs/update-smart-home-device-input';
 import { SmartHomeDevice } from '@prisma/client';
+import { UpdateDeviceErrorInput } from '../inputs/update-device-error-input';
 
 const DEFAULT_ACTUAL_TEMPERATURE = 20.5;
 const DEFAULT_TARGET_TEMPERATURE = 21;
@@ -92,6 +93,28 @@ export class SmartHomeDeviceService {
     return updatedDevice;
   }
 
+  async updateError(ownerId: string, updates: UpdateDeviceErrorInput) {
+    const errorInOriginalState =
+      await this.prismaService.deviceError.findUnique({
+        where: { id: updates.id },
+        include: { source: true },
+      });
+    if (
+      !errorInOriginalState ||
+      errorInOriginalState.source.ownerId !== ownerId
+    ) {
+      throw new ForbiddenException('could not update error');
+    }
+    try {
+      return await this.prismaService.deviceError.update({
+        where: { id: updates.id },
+        data: { status: updates.status },
+      });
+    } catch (error) {
+      throw new ForbiddenException('could not update error');
+    }
+  }
+
   async updateSmartHomeDevice(
     ownerId: string,
     updates: UpdateSmartHomeDeviceInput,
@@ -155,6 +178,17 @@ export class SmartHomeDeviceService {
       throw new ForbiddenException('could not update smart home device');
     }
     throw new BadRequestException('could not update smart home device');
+  }
+
+  async getError(id: string, ownerId: string) {
+    const error = await this.prismaService.deviceError.findUnique({
+      where: { id },
+      include: { source: true },
+    });
+    if (!error?.source || error.source.ownerId !== ownerId) {
+      throw new NotFoundException(`Cannot find error with id ${id}`);
+    }
+    return error;
   }
 
   changeOccurred() {

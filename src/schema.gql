@@ -17,9 +17,9 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 enum ErrorStatus {
-  Active
-  Checked
-  Resolved
+  Unread
+  Read
+  Acknowledged
 }
 
 type StatusChange {
@@ -89,12 +89,14 @@ input StatusChangeInput {
 type Query {
   getSmartHomeDevices: [SmartHomeDevice!]!
   getSmartHomeDevice(id: String!): SmartHomeDevice!
+  getError(id: String!): DeviceError!
   getUsers: [User!]!
   getUser(id: String!): User!
 }
 
 type Mutation {
   updateSmartHomeDevice(input: UpdateSmartHomeDeviceInput!): SmartHomeDevice!
+  updateError(input: UpdateDeviceErrorInput!): DeviceError!
   createSmartHomeDevice(input: CreateSmartHomeDeviceInput!): SmartHomeDevice!
   setSmartHomeDevice(input: SetSmartHomeDeviceInput!): SmartHomeDevice!
   createUser(newUser: UserInput!): User!
@@ -104,6 +106,11 @@ input UpdateSmartHomeDeviceInput {
   targetTemperature: Float
   name: String
   id: String!
+}
+
+input UpdateDeviceErrorInput {
+  id: String!
+  status: ErrorStatus!
 }
 
 input CreateSmartHomeDeviceInput {

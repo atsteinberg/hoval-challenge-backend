@@ -47,7 +47,7 @@ model DeviceError {
   source            SmartHomeDevice? @relation(fields: [smartHomeDeviceId], references: [id])
   errorType         String
   message           String?
-  status            ErrorStatus      @default(Active)
+  status            ErrorStatus      @default(Unread)
   smartHomeDeviceId String?
 }
 
@@ -78,9 +78,9 @@ enum DeviceType {
 }
 
 enum ErrorStatus {
-  Active
-  Checked
-  Resolved
+  Unread
+  Read
+  Acknowledged
 }
 
 enum UserType {
