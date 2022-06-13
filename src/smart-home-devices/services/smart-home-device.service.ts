@@ -142,9 +142,9 @@ export class SmartHomeDeviceService {
             userInteractions: {
               create: {
                 interactionType: 'TargetTemperatureChange',
-                message: `Target temperature changed from ${deviceInOriginalState.targetTemperature.toFixed(
+                message: `Solltemperaturänderung von ${deviceInOriginalState.targetTemperature.toFixed(
                   1,
-                )}°C to ${updates.targetTemperature.toFixed(1)}°C`,
+                )}°C auf ${updates.targetTemperature.toFixed(1)}°C`,
               },
             },
           },
